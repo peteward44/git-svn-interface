@@ -70,7 +70,7 @@ function defineTests( transport ) {
 					]
 				}
 			);
-			await transport.unCat( result.url, null, 'file2.txt', 'new file contents', "Adding file" );
+			await transport.unCat( result.url, null, 'file2.txt', 'new file contents' );
 			await transport.update( result.checkoutDir );
 			assert.equal( fs.existsSync( path.join( result.checkoutDir, 'file2.txt' ) ), true, 'update works' );
 		} );
@@ -113,7 +113,7 @@ function defineTests( transport ) {
 					]
 				}
 			);
-			await transport.unCat( result.url, null, 'file2.txt', 'uncat', "comment" );
+			await transport.unCat( result.url, null, 'file2.txt', 'uncat' );
 			assert.equal( await transport.exists( result.url, null, 'file2.txt' ), true, 'uncat created file' );
 			assert.equal( await transport.cat( result.url, null, 'file2.txt' ), "uncat", 'uncat has put correct contents in file' );
 		} );
@@ -171,7 +171,7 @@ function defineTests( transport ) {
 					]
 				}
 			);
-			await transport.createBranch( result.checkoutDir, 'newbranch', false, 'create branch' );
+			await transport.createBranch( result.checkoutDir, 'newbranch' );
 			assert.equal( await transport.exists( result.url, { name: 'newbranch', type: 'branch' }, 'file.txt' ), true, 'uncat created file' );			
 		} );
 		
