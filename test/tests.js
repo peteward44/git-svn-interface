@@ -27,20 +27,80 @@ function defineTests( transport ) {
 			assert.equal( transport.isWorkingCopy( checkoutDir ), true, 'Repository checkout out correctly' );
 		} );
 		
-		helpers.promiseIt('isWorkingCopyClean', async function( tempDir ) {
-		
+		helpers.promiseIt('isWorkingCopyClean - clean working copy', async function( tempDir ) {
+			let result = await helpers.createRepoCheckout(
+				tempDir,
+				transport,
+				{
+					files: [
+						{ path: 'file.txt', contents: 'virgin contents' }
+					]
+				}
+			);
+			assert.equal( await transport.isWorkingCopyClean( result.checkoutDir ), true, 'isWorkingCopyClean - clean working copy reports true' );
 		} );
 		
-		helpers.promiseIt('update', async function( tempDir ) {
+		helpers.promiseIt('isWorkingCopyClean - modifying an existing file', async function( tempDir ) {
+			let result = await helpers.createRepoCheckout(
+				tempDir,
+				transport,
+				{
+					files: [
+						{ path: 'file.txt', contents: 'virgin contents' }
+					]
+				}
+			);
+			fs.writeFileSync( path.join( result.checkoutDir, 'file.txt' ), 'modified contents' );
+			assert.equal( await transport.isWorkingCopyClean( result.checkoutDir ), false, 'isWorkingCopyClean - modifying an existing file reports false' );
+		} );
+
+		// TODO: no function to add files to a working copy yet
+		// helpers.promiseIt('isWo##rkingCopyClean - adding a new file', async function( tempDir ) {
+			// let result = await helpers.createRepoCheckout( tempDir, transport );
+			
+		// } );
 		
+		helpers.promiseIt('update', async function( tempDir ) {
+			let result = await helpers.createRepoCheckout(
+				tempDir,
+				transport,
+				{
+					files: [
+						{ path: 'file.txt', contents: 'virgin contents' }
+					]
+				}
+			);
+			await transport.unCat( result.url, null, 'file2.txt', 'new file contents', "Adding file" );
+			await transport.update( result.checkoutDir );
+			assert.equal( fs.existsSync( path.join( result.checkoutDir, 'file2.txt' ) ), true, 'update works' );
 		} );
 		
 		helpers.promiseIt('exists', async function( tempDir ) {
-		
+			let result = await helpers.createRepo(
+				tempDir,
+				transport,
+				{
+					files: [
+						{ path: 'file.txt', contents: 'virgin contents' }
+					]
+				}
+			);
+			assert.equal( await transport.exists( result.url, null, 'file.txt' ), true, 'exists reports file exists' );
+			assert.equal( await transport.exists( result.url, null, 'file2.txt' ), false, 'exists reports file does not exist' );
 		} );
 		
 		helpers.promiseIt('cat', async function( tempDir ) {
-		
+			let result = await helpers.createRepo(
+				tempDir,
+				transport,
+				{
+					files: [
+						{ path: 'file.txt', contents: 'virgin contents' }
+					]
+				}
+			);
+			assert.equal( await transport.cat( result.url, null, 'file.txt' ), "virgin contents", 'cat works' );
+			await helpers.assertPromiseThrows( async function() { await transport.cat( result.url, null, 'file2.txt' ); }, 'cat throws on non-existant file' );
 		} );
 		
 		helpers.promiseIt('unCat', async function( tempDir ) {

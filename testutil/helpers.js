@@ -30,10 +30,33 @@ export function promiseIt( name, func ) {
 }
 
 
+export function assertPromiseThrows( func, msg ) {
+	return new Promise( function( resolve, reject ) {
+		var prom = func();
+		prom.catch( function( err ) {
+			resolve();
+		} );
+		prom.then( function() {
+			reject( new Error( "Assertion failed: " + msg ) );
+		} );
+	} );
+}
+
+
 export async function createRepo( tempDir, transport, options ) {
 	options = options || {};
 	let dirname = uuid.v4();
 	let { url: url, dir: dir } = await transport.createRepo( path.resolve( path.join( tempDir, dirname ) ), { targetDesc: options.targetDesc } );
+	
+	// add any files
+	if ( Array.isArray( options.files ) ) {
+		for ( let i=0; i<options.files.length; ++i ) {
+			var file = options.files[i];
+			console.log( "Adding file", url, file.path );
+			await transport.unCat( url, options.targetDesc, file.path, file.contents || '', "Creating repo: Adding file " + path.basename( file.path ) );
+		}
+	}
+	
 	return {
 		url: url,
 		targetDesc: options.targetDesc,
