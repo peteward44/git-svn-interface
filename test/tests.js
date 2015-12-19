@@ -104,31 +104,75 @@ function defineTests( transport ) {
 		} );
 		
 		helpers.promiseIt('unCat', async function( tempDir ) {
-		
+			let result = await helpers.createRepo(
+				tempDir,
+				transport,
+				{
+					files: [
+						{ path: 'file.txt', contents: 'virgin contents' }
+					]
+				}
+			);
+			await transport.unCat( result.url, null, 'file2.txt', 'uncat', "comment" );
+			assert.equal( await transport.exists( result.url, null, 'file2.txt' ), true, 'uncat created file' );
+			assert.equal( await transport.cat( result.url, null, 'file2.txt' ), "uncat", 'uncat has put correct contents in file' );
 		} );
 		
 		helpers.promiseIt('getWorkingCopyInfo', async function( tempDir ) {
-		
+			let result = await helpers.createRepoCheckout(
+				tempDir,
+				transport,
+				{
+					files: [
+						{ path: 'file.txt', contents: 'virgin contents' }
+					]
+				}
+			);
+			let info = await transport.getWorkingCopyInfo( result.checkoutDir );
+			assert.equal( info.url, result.url, 'getWorkingCopyInfo reports correct url' );
 		} );
+
+		// TODO: not sure how to test these reliably
+		// helpers.promiseIt('getUrlHeadRevision', async function( tempDir ) {
+		// } );
 		
-		helpers.promiseIt('getUrlHeadRevision', async function( tempDir ) {
+		// helpers.promiseIt('getWorkingCopyRevision', async function( tempDir ) {
+	
+		// } );
 		
-		} );
-		
-		helpers.promiseIt('getWorkingCopyRevision', async function( tempDir ) {
-		
-		} );
-		
-		helpers.promiseIt('listTags', async function( tempDir ) {
-		
-		} );
+		// helpers.promiseIt('listTags', async function( tempDir ) {
+			
+		// } );
 		
 		helpers.promiseIt('exportDir', async function( tempDir ) {
-		
+			let result = await helpers.createRepoCheckout(
+				tempDir,
+				transport,
+				{
+					files: [
+						{ path: 'file.txt', contents: 'virgin contents' }
+					]
+				}
+			);
+			
+			let outDir = path.join( tempDir, uuid.v4() );
+			await transport.exportDir( result.checkoutDir, outDir );
+			assert.equal( fs.existsSync( path.join( outDir, 'file.txt' ) ), true, 'file exported to outdir' );
+			assert.equal( transport.isWorkingCopy( outDir ), false, 'export does not create a working copy' );
 		} );
 		
 		helpers.promiseIt('createBranch', async function( tempDir ) {
-		
+			let result = await helpers.createRepoCheckout(
+				tempDir,
+				transport,
+				{
+					files: [
+						{ path: 'file.txt', contents: 'virgin contents' }
+					]
+				}
+			);
+			await transport.createBranch( result.checkoutDir, 'newbranch', false, 'create branch' );
+			assert.equal( await transport.exists( result.url, { name: 'newbranch', type: 'branch' }, 'file.txt' ), true, 'uncat created file' );			
 		} );
 		
 		helpers.promiseIt('createTag', async function( tempDir ) {
