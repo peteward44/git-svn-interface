@@ -54,6 +54,9 @@ function defineTests( transport ) {
 			assert.equal( await transport.isWorkingCopyClean( result.checkoutDir ), false, 'isWorkingCopyClean - modifying an existing file reports false' );
 		} );
 
+		// TODO: test checking specific files for isWorkingCopyClean
+		helpers.promiseIt('isWorkingCopyClean - modifying an existing file', async function( tempDir ) {
+		} );
 		// TODO: no function to add files to a working copy yet
 		// helpers.promiseIt('isWo##rkingCopyClean - adding a new file', async function( tempDir ) {
 			// let result = await helpers.createRepoCheckout( tempDir, transport );
