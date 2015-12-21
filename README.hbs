@@ -2,6 +2,34 @@
 Common interface to use Git/Svn repositories
 
 # API Reference
+
+Inside the exported object, there is an 'svn' and a 'git' object - both have the same functions.
+All asynchronous methods return an ES6 promise.
+
+In order to identify the master branch, other branches, and tags, the library uses what it call 'target descriptions' -
+these are just objects with the format
+
+```
+{ name: 'branchName', type: 'branch' }
+{ name: 'tagName', type: 'tag' }
+{ name: '', type: 'trunk' } // master branch on git
+```
+
+Passing 'null' where the functions expect a target description will default to the trunk/master.
+
+Example
+```
+var gsi = require( 'git-svn-interface' );
+gsi.svn.isWorkingCopyClean( '/home/user/wc' )
+	.then( function( isClean ) {
+		console.log( "Complete!" );
+	} );
+gsi.git.cat( 'git@server:/var/repo', null, 'file.txt' )
+	.then( function( contents ) {
+		console.log( "Complete!" );
+	} );
+```
+
 {{#module name="git-svn-interface"}}
 {{>body~}}
 {{>member-index~}}
