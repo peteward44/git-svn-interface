@@ -5,7 +5,7 @@ var os = require( 'os' );
 var path = require('path');
 var assert = require( 'assert' );
 var fs = require( 'fs-extra' );
-var uuid = require( 'node-uuid' );
+var uuid = require( 'uuid' );
 var helpers = require( '../testutil/helpers.js' );
 var gs = require('..' );
 

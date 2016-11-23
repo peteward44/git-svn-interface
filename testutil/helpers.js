@@ -2,7 +2,7 @@
 
 var fs = require('fs-extra');
 var path = require('path');
-var uuid = require( 'node-uuid' );
+var uuid = require( 'uuid' );
 var getTempDir = require( '../lib/getTempDir.js' );
 
 // replacement for mocha's it() method to return a promise instead of accept a callback
