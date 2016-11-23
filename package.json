@@ -37,6 +37,6 @@
     "babel-runtime": "^6.3.19",
     "fs-extra": "^0.26.2",
     "node-svn-ultimate": "^1.0.2",
-    "node-uuid": "^1.4.7"
+    "uuid": "^3.0.0"
   }
 }
