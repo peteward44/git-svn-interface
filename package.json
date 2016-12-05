@@ -1,6 +1,6 @@
 {
   "name": "git-svn-interface",
-  "version": "0.1.7",
+  "version": "0.1.8",
   "description": "Common interface to use Git/Svn repositories",
   "main": "index.js",
   "scripts": {
